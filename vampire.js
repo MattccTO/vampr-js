@@ -33,8 +33,6 @@ class Vampire {
     return this.numberOfVampiresFromOriginal < vampire.numberOfVampiresFromOriginal;
   }
 
-  /* Stretch */
-
   // Returns the closest common ancestor of two vampires.
   // The closest common anscestor should be the more senior vampire if a direct ancestor is used.
   // For example:
@@ -51,7 +49,7 @@ class Vampire {
     return lineage;
   }
 
-  // Not working yet
+  // Returns closest common ancestor
   closestCommonAncestor(vampire) {
     const lineageOne = this.lineage;
     const lineageTwo = vampire.lineage;
@@ -72,6 +70,43 @@ class Vampire {
         }
       }
     }
+  }
+
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
+    if (this.name === name) {
+      return this;
+    } else {
+      let match = null;
+      for (let i = 0; match === null && i < this.offspring.length; i++) {
+        match = this.offspring[i].vampireWithName(name);
+      }
+      return match
+    }
+    return null;
+  }
+
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
+    let descendentCount = 0;
+    for (const vampire of this.offspring) {
+      descendentCount++;
+      descendentCount += vampire.totalDescendents;
+    }
+    return descendentCount;
+  }
+
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
+    let millenials = [];
+    if (this.yearConverted > 1980) {
+      millenials.push(this);
+    }
+    for (const vampire of this.offspring) {
+      const millenialOffspring = vampire.allMillennialVampires;
+      millenials = millenials.concat(millenialOffspring);
+    }
+    return millenials;
   }
 }
 
